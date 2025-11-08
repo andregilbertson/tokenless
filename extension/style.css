@@ -6,8 +6,8 @@
 }
 
 .custom-icon {
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   background-color: #303030; /* blue, change as needed */
   border-radius: 50%;         /* makes it circular */
   display: flex;
