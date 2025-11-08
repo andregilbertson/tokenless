@@ -1,10 +1,9 @@
 {
   "name": "belching",
   "private": true,
-  "type": "module"
-}
-{
+  "type": "module",
   "dependencies": {
+    "compromise": "^14.14.4",
     "dictionary-en": "^4.0.0",
     "nspell": "^2.1.5"
   }

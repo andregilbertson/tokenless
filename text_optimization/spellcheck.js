@@ -44,6 +44,4 @@ export async function getSpellingSuggestions(word) {
     };
 }
 
-// #2: DELETING UNECESSARY WORDS
-
 

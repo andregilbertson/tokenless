@@ -1,8 +1,9 @@
-import { initSpellChecker, getSpellingSuggestions } from "./text_optimizer_functions.js";
+import { initSpellChecker, getSpellingSuggestions } from "./spellcheck.js";
+import { removePlease, removeThanks, removeAdverbs, removeFiller } from "./delete.js";
 
-async function run() {
+async function runSpellCheck() {
     await initSpellChecker();
-    
+
     console.log(await getSpellingSuggestions("enviornment")); //incorrect letter switch
     console.log(await getSpellingSuggestions("hello")); //correct
     console.log(await getSpellingSuggestions("beleev")); //multiple suggestions test
@@ -11,4 +12,9 @@ async function run() {
     console.log(await getSpellingSuggestions("h")); //unclear word
 }
 
-run();
+runSpellCheck();
+
+function runDelete(name, input) {
+    const output = removeFiller(input);
+    
+}
