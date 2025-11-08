@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Set input values
       colorInput.value = color;
       darkModeToggle.checked = isDark;
-      strategyInput.value = data.strategy || "balanced";
+      strategyInput.value = data.strategy || "auto";
       removeFillerToggle.checked = data.removeFiller ?? true;
       simplifySentencesToggle.checked = data.simplifySentences ?? true;
       aggressiveModeToggle.checked = data.aggressiveMode ?? false;
