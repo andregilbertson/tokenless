@@ -10,6 +10,21 @@ module.exports = {
         path: path.resolve(__dirname, "dist"), // Output directory
         filename: "[name].js", // Output filename pattern
     },
+    module: {
+        rules: [
+            {
+                test: /\.(?:js|mjs|cjs)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        targets: "defaults",
+                        presets: [["@babel/preset-env"]],
+                    },
+                },
+            },
+        ],
+    },
     plugins: [
         new CopyWebpackPlugin({
             patterns: [

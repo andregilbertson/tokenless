@@ -1,6 +1,7 @@
-export function processPromptText(text) {
-  console.log("Processing:", text);
+function processPromptText(text) {
+    console.log("Processing:", text);
 
-
-  //run through tokenizer or somethign
+    //run through tokenizer or somethign
 }
+
+module.exports = processPromptText;
