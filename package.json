@@ -1,0 +1,27 @@
+{
+    "name": "belching",
+    "version": "1.0.0",
+    "description": "A complete boilerplate template for creating Chrome extensions using Manifest V3.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/andregilbertson/belching.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/andregilbertson/belching/issues"
+    },
+    "homepage": "https://github.com/andregilbertson/belching#readme",
+    "devDependencies": {
+        "copy-webpack-plugin": "^13.0.1",
+        "webpack": "^5.102.1",
+        "webpack-cli": "^6.0.1"
+    }
+}
