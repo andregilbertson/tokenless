@@ -1,22 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Extension Popup</title>
-  <link rel="stylesheet" href="popup.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Chrome Extension</h1>
-    <p>Welcome to your extension!</p>
-    <button id="actionBtn" class="btn">Click Me</button>
-    <button id="getPromptBtn" class="btn btn-secondary">Get Prompt Text</button>
-    <button id="getResponseBtn" class="btn btn-secondary">Get ChatGPT Response</button>
-    <div id="status" class="status"></div>
-    <div id="textOutput" class="text-output"></div>
-  </div>
-  <script src="popup.js"></script>
-</body>
-</html>
+<html>
+  <head>
+    <title>Extension Settings</title>
+    <style>
+      body {
+        width: 250px;
+        font-family: system-ui, sans-serif;
+        padding: 12px;
+      }
+      label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      input[type="color"] {
+        width: 40px;
+        height: 25px;
+        border: none;
+        cursor: pointer;
+      }
+      button {
+        width: 100%;
+        padding: 8px;
+        margin-top: 10px;
+        background-color: #4a90e2;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #357abd;
+      }
+      #status {
+        margin-top: 8px;
+        text-align: center;
+        font-size: 0.9em;
+        color: #4a90e2;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Extension Settings</h3>
 
+    <label>
+      Enable button
+      <input type="checkbox" id="enabled" />
+    </label>
+
+    <label>
+      Button color
+      <input type="color" id="color" />
+    </label>
+
+    <button id="saveBtn">Save Settings</button>
+    <div id="status"></div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
