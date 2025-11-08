@@ -1,0 +1,66 @@
+:root {
+  --button-color: #4a90e2;
+}
+
+body {
+  width: 250px;
+  font-family: system-ui, sans-serif;
+  padding: 12px;
+  background-color: var(--bg-color, #ffffff);
+  color: var(--text-color, #111111);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+h3,
+h4 {
+  margin: 8px 0;
+}
+
+label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+input[type="color"] {
+  width: 40px;
+  height: 25px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--button-color);
+}
+input[type="range"] {
+    accent-color: var(--button-color);
+    background: #ccc; /* track color stays fixed */
+}
+
+
+
+button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  background-color: var(--button-color);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: color-mix(in srgb, var(--button-color) 85%, black);
+}
+
+#status {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.9em;
+  color: var(--button-color);
+}

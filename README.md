@@ -1,87 +1,82 @@
-# belching
+# Chrome Extension Boilerplate
 
-## Spellcheck + Token Minimizer Integration
-This project includes a pluggable spellchecker designed for a hackathon-friendly pipeline:
+A complete boilerplate template for creating Chrome extensions using Manifest V3.
 
-input -> process (token minimize) -> spell check (replacement/deletion) -> new prompt
+## Features
 
-The default is lightweight and works out-of-the-box with simple heuristics. You can upgrade accuracy by installing `nspell` and an English dictionary.
+- ✅ Manifest V3 (latest Chrome extension standard)
+- ✅ Popup interface with HTML/CSS/JS
+- ✅ Background service worker
+- ✅ Content script for page interaction
+- ✅ Chrome Storage API integration
+- ✅ Message passing between components
+- ✅ Modern, clean UI
 
-### Quick Start
-1) Keep the defaults (no extra install): you’ll get basic normalization of repeated letters and safe replacements when a simple dictionary is provided.
+## Project Structure
 
-2) Upgrade for accuracy (recommended):
-
-```bash
-npm install nspell dictionary-en
+```
+.
+├── manifest.json       # Extension configuration
+├── popup.html         # Popup interface HTML
+├── popup.js           # Popup interface logic
+├── popup.css          # Popup styling
+├── background.js      # Background service worker
+├── content.js         # Content script (runs on web pages)
+├── icons/             # Extension icons
+│   ├── icon16.png
+│   ├── icon48.png
+│   └── icon128.png
+└── README.md          # This file
 ```
 
-Then, in your code:
+## Setup Instructions
 
-```js
-import {
-  optimizeTextWithSpellcheck,
-  createSpellChecker,
-  buildDictionaryFromText,
-} from './text_optimizer_functions.js';
+1. **Create Icons**
+   - Create an `icons` folder
+   - Add three icon files: `icon16.png`, `icon48.png`, and `icon128.png`
+   - You can use any image editor or online tools to create these
 
-// Option A: Auto-detect backend (prefers nspell if installed, else fallback)
-const result = await optimizeTextWithSpellcheck('Thiss is sooo cooool!!!', {
-  backend: 'auto',           // 'auto' | 'nspell' | 'simple'
-  normalizeRepeats: true,    // collapse very long letter repeats
-  returnMetadata: true,      // get per-token actions
-});
-console.log(result.text);
-console.log(result.tokens);
+2. **Load Extension in Chrome**
+   - Open Chrome and navigate to `chrome://extensions/`
+   - Enable "Developer mode" (toggle in top right)
+   - Click "Load unpacked"
+   - Select this project folder
 
-// Option B: Provide a small custom dictionary built from domain text
-const domainText = 'API LLM prompt token minimizer minimization normalization JavaScript TypeScript';
-const customDict = buildDictionaryFromText(domainText);
-const resultWithDict = await optimizeTextWithSpellcheck('Minimzation of tokans', {
-  backend: 'simple',
-  customDictionary: customDict,
-});
-console.log(resultWithDict.text);
+3. **Test the Extension**
+   - Click the extension icon in the toolbar
+   - Click the button in the popup
+   - Open the browser console to see logs
+   - The content script will run on all web pages
 
-// Option C: Force nspell (requires install)
-const checker = await createSpellChecker({ backend: 'nspell' });
-console.log(checker.correct('recieve')); // => 'receive'
-```
+## Customization
 
-### How It Works
-- Tokenization: preserves whitespace and punctuation, only correcting A–Z words.
-- Spellcheck backends:
-  - nspell (Hunspell): accurate, offline, large dictionary. Optional but recommended.
-  - simple: a minimal fallback that supports:
-    - repeated letter normalization (e.g., `cooool` → `cool`)
-    - one-character delete heuristic (extra letter removal)
-    - edit-distance-1 candidate search if a custom dictionary is provided
-- Case preservation: maintains original casing (UPPER, Capitalized, lower).
+### Modify Permissions
+Edit `manifest.json` to add/remove permissions based on your needs:
+- `storage` - For saving data
+- `activeTab` - Access to current tab
+- `tabs` - Access to all tabs
+- `bookmarks` - Access to bookmarks
+- etc.
 
-### Recommended Technologies
-- nspell (+ dictionary-en): best trade-off for hackathons—good accuracy, offline, easy API.
-  - Pros: robust, fast, no network, maintained ecosystem
-  - Cons: adds a dependency and dictionary files
-- Fallback simple backend (included): zero install, deterministic, safe minimal fixes
-  - Pros: no extra packages, works immediately
-  - Cons: limited coverage without a dictionary
+### Add More Features
+- **Options Page**: Add `options.html` and `options.js` for settings
+- **Context Menus**: Use `chrome.contextMenus` API
+- **Notifications**: Use `chrome.notifications` API
+- **Badge**: Use `chrome.action.setBadgeText()` for popup badge
 
-Optional alternatives if you need them later:
-- wink spell (via wink NLP ecosystem): good JS NLP tools, but requires integration work
-- LLM-based correction: highest accuracy but needs API calls and adds latency/cost
+## Development Tips
 
-### Integration Pattern
-Your project pipeline likely looks like this:
+- Use `chrome.storage.sync` for data that syncs across devices
+- Use `chrome.storage.local` for device-specific data
+- Content scripts run in isolated world - they can't access page's JavaScript variables
+- Background service worker has a 5-minute idle timeout (use alarms for long-running tasks)
 
-1. Pre-process + token minimizer (your current logic)
-2. Spellcheck + edit:
-   - replacement: correct misspellings via dictionary suggestions
-   - deletion: remove extra characters (e.g., accidental double keypress)
-   - normalization: collapse repeated letters for cleaner prompts
-3. Post-process + prompt assembly
+## Resources
 
-Use `optimizeTextWithSpellcheck` as the spellcheck step. If you already do token minimization, run it first, then pass the output into the spellchecker and feed the result into your new prompt.
+- [Chrome Extension Documentation](https://developer.chrome.com/docs/extensions/)
+- [Manifest V3 Migration Guide](https://developer.chrome.com/docs/extensions/mv3/intro/)
+- [Chrome Extension APIs](https://developer.chrome.com/docs/extensions/reference/)
 
-### Notes
-- If you force `backend: 'nspell'` without installing deps, you’ll get an error telling you to install them.
-- If you rely on the `simple` backend without a dictionary, only heuristic changes are applied (no full suggestions). For domain-specific prompts, consider building a quick dictionary with `buildDictionaryFromText()` from your team’s docs/examples.
+## License
+
+MIT - Feel free to use this template for your projects!
