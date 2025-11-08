@@ -15,9 +15,16 @@
 
     const icon = document.createElement("div");
     icon.className = "custom-icon";
-    icon.textContent = "✨"; // or use an <img> or <svg> inside
+    //icon.textContent = "✨"; // or use an <img> or <svg> inside
     icon.title = "Magic Icon";
 
+    const svg = document.createElement("img");
+    svg.src = chrome.runtime.getURL("icons/recycle-solid-full.svg"); // resolves correct path in extensions
+    svg.alt = "Magic Icon";
+    svg.width = 20;
+    svg.height = 20;
+
+    icon.appendChild(svg);
     // Click event (currently blank)
     icon.addEventListener("click", () => {
       // TODO: fill in functionality
