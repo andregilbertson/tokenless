@@ -8,7 +8,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, "dist"), // Output directory
-        filename: "[name].bundle.js", // Output filename pattern
+        filename: "[name].js", // Output filename pattern
     },
     plugins: [
         new CopyWebpackPlugin({
