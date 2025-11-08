@@ -15,9 +15,55 @@ const processPromptText = require("./app.js");
 
         const icon = document.createElement("div");
         icon.className = "custom-icon unselectable";
-        icon.textContent = "✨"; // or use an <img> or <svg> inside
         icon.title = "Magic Icon";
+        // Inline the leaf SVG so it inherits color and hover effects
+        (function loadLeafSvg() {
+            try {
+                const getURL =
+                    (chrome?.runtime?.getURL
+                        ? chrome.runtime.getURL
+                        : browser?.runtime?.getURL
+                        ? browser.runtime.getURL
+                        : (p) => p);
+        
+                const svgUrl = getURL("../../icons/leaf-logo.svg");
+        
+                fetch(svgUrl)
+                    .then((res) => res.text())
+                    .then((svgText) => {
+                        // Place SVG inside button
+                        icon.innerHTML = svgText;
+        
+                        const svg = icon.querySelector("svg");
+                        if (svg) {
+                            // Remove massive width/height from SVGRepo
+                            svg.removeAttribute("height");
+                            svg.removeAttribute("width");
+        
+                            // Make the icon scale inside the circle
+                            svg.style.width = "60%";
+                            svg.style.height = "60%";
+        
+                            // IMPORTANT: ensure it becomes white on hover
+                            svg.querySelectorAll("*").forEach((n) => {
+                                if (n.getAttribute("fill")) {
+                                    n.setAttribute("fill", "currentColor");
+                                }
+                                if (n.getAttribute("stroke")) {
+                                    n.setAttribute("stroke", "currentColor");
+                                }
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        icon.textContent = "✨";
+                    });
+            } catch (err) {
+                icon.textContent = "✨";
+            }
+        })();
 
+        
         // Click event (currently blank)
         icon.addEventListener("click", () => {
             // TODO: fill in functionality

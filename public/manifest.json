@@ -36,7 +36,8 @@
     {
       "resources": [
         "dictionary-en/*.aff",
-        "dictionary-en/*.dic"
+        "dictionary-en/*.dic",
+        "icons/*.svg"
       ],
       "matches": ["<all_urls>"]
     }
