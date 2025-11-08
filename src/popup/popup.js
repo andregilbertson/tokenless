@@ -5,13 +5,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // Inputs
   const colorInput = document.getElementById("color");
   const darkModeToggle = document.getElementById("darkModeToggle");
-  const aggressivenessInput = document.getElementById("aggressiveness");
-  const removeFillerCheckbox = document.getElementById("removeFiller");
-  const simplifySentencesCheckbox = document.getElementById("simplifySentences");
+  const strategyInput = document.getElementById("strategy");
+  const removeFillerToggle = document.getElementById("removeFiller");
+  const simplifySentencesToggle = document.getElementById("simplifySentences");
+  const aggressiveModeToggle = document.getElementById("aggressiveMode");
 
-  // Load saved settings
+  // Load settings
   chrome.storage.sync.get(
-    ["buttonColor", "darkMode", "aggressiveness", "removeFiller", "simplifySentences"],
+    [
+      "buttonColor",
+      "darkMode",
+      "strategy",
+      "removeFiller",
+      "simplifySentences",
+      "aggressiveMode"
+    ],
     (data) => {
       const color = data.buttonColor || "#4a90e2";
       const isDark = data.darkMode ?? false;
@@ -19,7 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Set input values
       colorInput.value = color;
       darkModeToggle.checked = isDark;
-      aggressivenessInput.value = data.aggressiveness ?? 2;
+      strategyInput.value = data.strategy || "balanced";
+      removeFillerToggle.checked = data.removeFiller ?? true;
+      simplifySentencesToggle.checked = data.simplifySentences ?? true;
+      aggressiveModeToggle.checked = data.aggressiveMode ?? false;
 
       // Apply styles
       document.documentElement.style.setProperty("--button-color", color);
@@ -32,7 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const settings = {
       buttonColor: colorInput.value,
       darkMode: darkModeToggle.checked,
-      aggressiveness: parseInt(aggressivenessInput.value)
+      strategy: strategyInput.value,
+      removeFiller: removeFillerToggle.checked,
+      simplifySentences: simplifySentencesToggle.checked,
+      aggressiveMode: aggressiveModeToggle.checked
     };
 
     chrome.storage.sync.set(settings, () => {
@@ -43,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Live updates (optional)
+  // Live updates
   colorInput.addEventListener("input", (e) => {
     document.documentElement.style.setProperty("--button-color", e.target.value);
   });
