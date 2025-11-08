@@ -1,3 +1,9 @@
+// Import the optimizer functions from output_optimizer.js
+const { 
+  optimizePromptForConciseOutput, 
+  getOptimizationStats, 
+  optimizePromptsBatch 
+} = require('./output_optimizor.js');
 /**
  * Example usage of the output optimizer functions
  */

@@ -217,7 +217,7 @@ function makeConcise(text, options = {}) {
   const {
     removeFillers: shouldRemoveFillers = true,
     simplifySentences: shouldSimplify = true,
-    aggressive = false
+    aggressive: aggressive = false
   } = options;
   
   let result = text;

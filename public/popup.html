@@ -19,18 +19,35 @@
       <input type="color" id="color" />
     </label>
 
-    <h4>Optimization</h4>
+    <h4>Output Optimization</h4>
 
-    <label for="aggressiveness">
-      Aggressiveness
-      <input
-        type="range"
-        id="aggressiveness"
-        min="0"
-        max="4"
-        step="1"
-        value="1"
-      />
+    <label for="output_optimization_strategy">
+      Strategy
+      <select id="strategy" name="output_strategy">
+        <option value="simple">simple</option>
+        <option value="detailed">detailed</option>
+        <option value="format">format</option>
+        <option value="context">context</option>
+        <option value="token">token</option>
+        <option value="tldr">tldr</option>
+      </select>
+    </label>
+
+    <h4>Replacement</h4>
+
+    <label>
+      Remove Filler
+      <input type="checkbox" id="removeFiller" />
+    </label>
+
+    <label>
+      Simplify Sentences
+      <input type="checkbox" id="simplifySentences" />
+    </label>
+
+    <label>
+      Aggressive Mode
+      <input type="checkbox" id="aggressiveMode" />
     </label>
 
     <button id="saveBtn">Save Settings</button>
