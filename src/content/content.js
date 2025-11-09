@@ -583,6 +583,13 @@ const processPromptText = require("./app.js");
                                             "tokens (via delegation)"
                                         );
                                         showTokenNotification(tokensToShow);
+                                        notOpened = true;
+                                        popup.classList.add("hidden");
+                                        console.log("Suggestions popup closed");
+                                        const list = popup.querySelector("#suggestionsList");
+                                        while (list.firstChild) {
+                                            list.removeChild(list.firstChild);
+                                        }
                                         currentPromptTokensSaved = 0;
 
                                         // Reset flag after a delay
