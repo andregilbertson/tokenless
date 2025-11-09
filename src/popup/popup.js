@@ -295,7 +295,7 @@ function App() {
           className={`tab ${activeTab === "main" ? "active" : ""}`}
           onClick={() => setActiveTab("main")}
         >
-          Impact
+          Savings
         </div>
         <div
           className={`tab ${activeTab === "usage" ? "active" : ""}`}
