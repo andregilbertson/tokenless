@@ -243,11 +243,21 @@ function App() {
       document.documentElement.style.setProperty("--text-color", "#f1f1f1");
       document.documentElement.style.setProperty("--tab-bg", "#2d2d2d");
       document.documentElement.style.setProperty("--tab-shadow", "rgba(255, 255, 255, 0.1)");
+      document.documentElement.style.setProperty("--settings-border", "rgba(255, 255, 255, 0.15)");
+      document.documentElement.style.setProperty("--settings-border-light", "rgba(255, 255, 255, 0.08)");
+      document.documentElement.style.setProperty("--settings-shadow", "rgba(0, 0, 0, 0.3)");
+      document.documentElement.style.setProperty("--settings-shadow-hover", "rgba(0, 0, 0, 0.4)");
+      document.documentElement.style.setProperty("--settings-hover-bg", "rgba(255, 255, 255, 0.05)");
     } else {
       document.documentElement.style.setProperty("--bg-color", "#ffffff");
       document.documentElement.style.setProperty("--text-color", "#111111");
       document.documentElement.style.setProperty("--tab-bg", "#EEE");
       document.documentElement.style.setProperty("--tab-shadow", "rgba(0, 0, 0, 0.06)");
+      document.documentElement.style.setProperty("--settings-border", "rgba(0, 0, 0, 0.1)");
+      document.documentElement.style.setProperty("--settings-border-light", "rgba(0, 0, 0, 0.05)");
+      document.documentElement.style.setProperty("--settings-shadow", "rgba(0, 0, 0, 0.05)");
+      document.documentElement.style.setProperty("--settings-shadow-hover", "rgba(0, 0, 0, 0.1)");
+      document.documentElement.style.setProperty("--settings-hover-bg", "rgba(0, 0, 0, 0.02)");
     }
   };
 
@@ -285,7 +295,7 @@ function App() {
           className={`tab ${activeTab === "main" ? "active" : ""}`}
           onClick={() => setActiveTab("main")}
         >
-          Main
+          Impact
         </div>
         <div
           className={`tab ${activeTab === "usage" ? "active" : ""}`}
@@ -340,8 +350,8 @@ function App() {
       {/* Usage tab content */}
       {activeTab === "usage" && (
         <div className="tab-content active">
-          <div className="impact-card">
-            <h3 className="impact-title">Total Usage</h3>
+          <div className="usage-card">
+            <h3 className="usage-title">Total Usage</h3>
 
             {/* Progress Bar and Bulb Container */}
             <div className="progress-bulb-container">
@@ -377,79 +387,92 @@ function App() {
       {/* Settings tab content */}
       {activeTab === "settings" && (
         <div className="tab-content active">
-          <h3>Settings</h3>
+          <div className="settings-container">
+            <h3 className="settings-title">Settings</h3>
 
-          <h4>Style</h4>
+            <div className="settings-section">
+              <h4 className="settings-section-title">Style</h4>
+              <div className="settings-card">
+                <label className="settings-label">
+                  <span className="settings-label-text">Dark Mode</span>
+                  <input
+                    type="checkbox"
+                    checked={settings.darkMode}
+                    onChange={(e) => handleInputChange("darkMode", e.target.checked)}
+                  />
+                </label>
 
-          <label>
-            Dark Mode
-            <input
-              type="checkbox"
-              checked={settings.darkMode}
-              onChange={(e) => handleInputChange("darkMode", e.target.checked)}
-            />
-          </label>
+                <label className="settings-label">
+                  <span className="settings-label-text">Button Color</span>
+                  <input
+                    type="color"
+                    value={settings.buttonColor}
+                    onChange={(e) => handleInputChange("buttonColor", e.target.value)}
+                    className="color-input"
+                  />
+                </label>
+              </div>
+            </div>
 
-          <label>
-            Button color
-            <input
-              type="color"
-              value={settings.buttonColor}
-              onChange={(e) => handleInputChange("buttonColor", e.target.value)}
-            />
-          </label>
+            <div className="settings-section">
+              <h4 className="settings-section-title">Output Optimization</h4>
+              <div className="settings-card">
+                <label htmlFor="output_optimization_strategy" className="settings-label">
+                  <span className="settings-label-text">Strategy</span>
+                  <select
+                    id="strategy"
+                    name="output_strategy"
+                    value={settings.strategy}
+                    onChange={(e) => handleInputChange("strategy", e.target.value)}
+                    className="settings-select"
+                  >
+                    <option value="auto">auto</option>
+                    <option value="simple">simple</option>
+                    <option value="detailed">detailed</option>
+                    <option value="format">format</option>
+                    <option value="context">context</option>
+                    <option value="token">token</option>
+                    <option value="tldr">tldr</option>
+                  </select>
+                </label>
+              </div>
+            </div>
 
-          <h4>Output Optimization</h4>
+            <div className="settings-section">
+              <h4 className="settings-section-title">Replacement</h4>
+              <div className="settings-card">
+                <label className="settings-label">
+                  <span className="settings-label-text">Remove Filler</span>
+                  <input
+                    type="checkbox"
+                    checked={settings.removeFiller}
+                    onChange={(e) => handleInputChange("removeFiller", e.target.checked)}
+                  />
+                </label>
 
-          <label htmlFor="output_optimization_strategy">
-            Strategy
-            <select
-              id="strategy"
-              name="output_strategy"
-              value={settings.strategy}
-              onChange={(e) => handleInputChange("strategy", e.target.value)}
-            >
-              <option value="auto">auto</option>
-              <option value="simple">simple</option>
-              <option value="detailed">detailed</option>
-              <option value="format">format</option>
-              <option value="context">context</option>
-              <option value="token">token</option>
-              <option value="tldr">tldr</option>
-            </select>
-          </label>
+                <label className="settings-label">
+                  <span className="settings-label-text">Simplify Sentences</span>
+                  <input
+                    type="checkbox"
+                    checked={settings.simplifySentences}
+                    onChange={(e) => handleInputChange("simplifySentences", e.target.checked)}
+                  />
+                </label>
 
-          <h4>Replacement</h4>
+                <label className="settings-label">
+                  <span className="settings-label-text">Aggressive Mode</span>
+                  <input
+                    type="checkbox"
+                    checked={settings.aggressiveMode}
+                    onChange={(e) => handleInputChange("aggressiveMode", e.target.checked)}
+                  />
+                </label>
+              </div>
+            </div>
 
-          <label>
-            Remove Filler
-            <input
-              type="checkbox"
-              checked={settings.removeFiller}
-              onChange={(e) => handleInputChange("removeFiller", e.target.checked)}
-            />
-          </label>
-
-          <label>
-            Simplify Sentences
-            <input
-              type="checkbox"
-              checked={settings.simplifySentences}
-              onChange={(e) => handleInputChange("simplifySentences", e.target.checked)}
-            />
-          </label>
-
-          <label>
-            Aggressive Mode
-            <input
-              type="checkbox"
-              checked={settings.aggressiveMode}
-              onChange={(e) => handleInputChange("aggressiveMode", e.target.checked)}
-            />
-          </label>
-
-          <button onClick={handleSave}>Save Settings</button>
-          <div id="status">{status}</div>
+            <button className="settings-save-btn" onClick={handleSave}>Save Settings</button>
+            <div id="status" className="settings-status">{status}</div>
+          </div>
         </div>
       )}
     </>
