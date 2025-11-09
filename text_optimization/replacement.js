@@ -1,3 +1,4 @@
+const getTokenCount = require('../src/content/token-counter');
 /**
  * Text Replacement Function - Makes text more concise
  * Removes redundancy, shortens verbose phrases, and simplifies language
@@ -201,90 +202,161 @@ function cleanWhitespace(text) {
 }
 
 /**
- * Main function to make text more concise
- * @param {string} text - The text to make concise
+ * Main function to generate concise text suggestions
+ * @param {string} text - The original text
  * @param {object} options - Configuration options
  * @param {boolean} options.removeFillers - Remove filler phrases (default: true)
  * @param {boolean} options.simplifySentences - Simplify sentence structures (default: true)
  * @param {boolean} options.aggressive - More aggressive replacements (default: false)
- * @returns {string} - The concise version of the text
+ * @returns {Array} - Array of suggestion objects: { before, after, tokensSaved }
  */
 function makeConcise(text, options = {}) {
-  if (!text || typeof text !== 'string') {
-    return text;
-  }
-  
+  if (!text || typeof text !== 'string') return [];
+
   const {
     removeFillers: shouldRemoveFillers = true,
     simplifySentences: shouldSimplify = true,
     aggressive: aggressive = false
   } = options;
-  
-  let result = text;
-  
-  // Step 1: Remove redundancy
-  result = removeRedundancy(result);
-  
-  // Step 2: Remove fillers (if enabled)
+
+  const suggestions = [];
+  const seen = new Set(); // to avoid duplicates
+
+  // Helper to add suggestion if unique
+  const addSuggestion = (before, after) => {
+    // blank string counts as one token but we want to treat it as 0 tokens
+    const tokenCountBefore = getTokenCount(before)
+    const tokensSaved = after == "" ? tokenCountBefore : tokenCountBefore - getTokenCount(after);
+    const key = `${before}→${after}`;
+    if (!seen.has(key) && before !== after) {
+      seen.add(key);
+      suggestions.push({ before, after, tokensSaved });
+    }
+  };
+
+  // Step 1: Redundancy replacements
+  for (const [verbose, concise] of Object.entries(verboseReplacements)) {
+    const regex = new RegExp(verbose.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      addSuggestion(match[0], concise);
+    }
+  }
+
+  // Step 2: Redundant word patterns
+  redundantWords.forEach(pattern => {
+    let match;
+    while ((match = pattern.exec(text)) !== null) {
+      const words = match[0].trim().split(/\s+/);
+      addSuggestion(match[0], words[words.length - 1]);
+    }
+  });
+
+  // Step 3: Wordy phrases
+  wordyPhrases.forEach(({ pattern, replacement }) => {
+    let match;
+    while ((match = pattern.exec(text)) !== null) {
+      addSuggestion(match[0], replacement);
+    }
+  });
+
+  // Step 4: Fillers
   if (shouldRemoveFillers) {
-    result = removeFillers(result);
+    const fillerPatterns = [
+      /\bas a matter of fact\b/gi,
+      /\bin actual fact\b/gi,
+      /\bthe fact of the matter is\b/gi,
+      /\bit goes without saying\b/gi,
+      /\bneedless to say\b/gi,
+      /\bfor all intents and purposes\b/gi,
+      /\bmore often than not\b/gi,
+      /\bit is important to note that\b/gi,
+      /\bit should be pointed out that\b/gi,
+      /\bit is worth mentioning that\b/gi,
+    ];
+    fillerPatterns.forEach(pattern => {
+      let match;
+      while ((match = pattern.exec(text)) !== null) {
+        addSuggestion(match[0], '');
+      }
+    });
   }
-  
-  // Step 3: Simplify sentences (if enabled)
+
+  // Step 5: Simplify sentences
   if (shouldSimplify) {
-    result = simplifySentences(result);
+    const sentencePatterns = [
+      { pattern: /\bthat\s+that\b/gi, replacement: 'that' },
+      { 
+        pattern: /\b(think|believe|know|say|see|feel|hope|wish|expect|assume|suppose|imagine|realize|understand|remember|forget|notice|hear|watch|observe|discover|find|show|prove|demonstrate|indicate|suggest|imply|mean|signify|reveal|point out|make clear|make sure|make certain)\s+that\b/gi,
+        replacement: '$1'
+      },
+      { pattern: /\bthere is\s+(a|an|the)\s+/gi, replacement: 'a ' },
+      { pattern: /\bthere are\s+/gi, replacement: '' },
+      { pattern: /\ba number of\b/gi, replacement: 'many' },
+      { pattern: /\ba lot of\b/gi, replacement: 'many' },
+      { pattern: /\ba great deal of\b/gi, replacement: 'much' },
+      { pattern: /\ba large amount of\b/gi, replacement: 'much' },
+    ];
+    sentencePatterns.forEach(({ pattern, replacement }) => {
+      let match;
+      while ((match = pattern.exec(text)) !== null) {
+        addSuggestion(match[0], replacement);
+      }
+    });
   }
-  
-  // Step 4: Aggressive mode - additional replacements
+
+  // Step 6: Aggressive replacements
   if (aggressive) {
-    // Remove more filler words
-    result = result.replace(/\b(actually|basically|essentially|literally|really|very|quite|rather|somewhat|pretty|fairly|quite|rather|somewhat)\s+/gi, '');
-    
-    // Remove unnecessary qualifiers
-    result = result.replace(/\b(kind of|sort of|type of)\s+/gi, '');
-    
-    // Simplify "is/are" + adjective constructions where possible
-    result = result.replace(/\bis\s+the\s+case\s+that\b/gi, '');
+    const aggressivePatterns = [
+      { pattern: /\b(actually|basically|essentially|literally|really|very|quite|rather|somewhat|pretty|fairly|quite|rather|somewhat)\s+/gi, replacement: '' },
+      { pattern: /\b(kind of|sort of|type of)\s+/gi, replacement: '' },
+      { pattern: /\bis\s+the\s+case\s+that\b/gi, replacement: '' },
+    ];
+    aggressivePatterns.forEach(({ pattern, replacement }) => {
+      let match;
+      while ((match = pattern.exec(text)) !== null) {
+        addSuggestion(match[0], replacement);
+      }
+    });
   }
-  
-  // Step 5: Clean up whitespace
-  result = cleanWhitespace(result);
-  
-  return result;
+
+  return suggestions;
 }
 
 /**
- * Get statistics about text reduction
- * @param {string} original - Original text
- * @param {string} concise - Concise text
- * @returns {object} - Statistics object
+ * Generate reduction statistics from suggestions
+ * @param {string} originalText - Original text
+ * @param {Array} suggestions - Array of suggestion objects
+ * @returns {object} - Statistics including total tokens saved
  */
-function getReductionStats(original, concise) {
-  const originalLength = original.length;
-  const conciseLength = concise.length;
-  const reduction = originalLength - conciseLength;
-  const reductionPercent = originalLength > 0 
-    ? ((reduction / originalLength) * 100).toFixed(1) 
-    : 0;
-  
-  const originalWords = original.split(/\s+/).filter(w => w.length > 0).length;
-  const conciseWords = concise.split(/\s+/).filter(w => w.length > 0).length;
-  const wordReduction = originalWords - conciseWords;
-  const wordReductionPercent = originalWords > 0
-    ? ((wordReduction / originalWords) * 100).toFixed(1)
-    : 0;
-  
+function getReductionStats(originalText, suggestions) {
+  const originalLength = originalText.length;
+  const originalWords = originalText.split(/\s+/).filter(w => w).length;
+
+  // Calculate tokensSaved as difference in word counts for each suggestion
+  let totalTokensSaved = 0;
+  const suggestionsWithTokens = suggestions.map(s => {
+    const beforeWords = s.before.trim().split(/\s+/).length;
+    const afterWords = s.after.trim().split(/\s+/).length;
+    const tokensSaved = beforeWords - afterWords;
+    totalTokensSaved += tokensSaved;
+    return { ...s, tokensSaved };
+  });
+
+  const conciseWords = originalWords - totalTokensSaved;
+  const wordReduction = totalTokensSaved;
+  const wordReductionPercent = originalWords > 0 ? (wordReduction / originalWords * 100).toFixed(1) : 0;
+
   return {
     originalLength,
-    conciseLength,
-    reduction,
-    reductionPercent: parseFloat(reductionPercent),
     originalWords,
     conciseWords,
     wordReduction,
-    wordReductionPercent: parseFloat(wordReductionPercent)
+    wordReductionPercent: parseFloat(wordReductionPercent),
+    suggestions: suggestionsWithTokens
   };
 }
+
 
 // Export functions
 if (typeof module !== 'undefined' && module.exports) {
