@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "dictionary-en": "^4.0.0",
+        "js-tiktoken": "^1.0.21",
         "nspell": "^2.1.5",
         "tiktoken": "^1.0.22"
     }

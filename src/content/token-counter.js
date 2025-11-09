@@ -1,12 +1,8 @@
-const { Tiktoken } = require("tiktoken/lite");
-const o200k_base = require("tiktoken/encoders/o200k_base.json");
+const { Tiktoken } = require("js-tiktoken/lite");
+const o200k_base = require("js-tiktoken/ranks/o200k_base");
 
 // Create a single shared encoder instance
-const encoding = new Tiktoken(
-  o200k_base.bpe_ranks,
-  o200k_base.special_tokens,
-  o200k_base.pat_str
-);
+const encoding = new Tiktoken(o200k_base);
 
 function getTokenCount(str) {
   // Reuse the same encoder — much faster
