@@ -271,7 +271,13 @@ const processPromptText = require("./app.js");
                 const list = popup.querySelector("#suggestionsList");
                 const messageDiv = document.createElement("div");
                 messageDiv.className = "no-suggestions-message";
-                messageDiv.textContent = "Your prompt looks great!";
+                const currentText = getPromptText();
+                if (currentText.trim() === '') {
+                  messageDiv.textContent = "Start writing a prompt to get suggestions!";
+                } else {
+                  messageDiv.textContent = "Your prompt looks great!";
+                }
+              
                 list.appendChild(messageDiv);
             } else {
                 //currentSuggestions = suggestions;
