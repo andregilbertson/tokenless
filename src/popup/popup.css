@@ -1,0 +1,145 @@
+:root {
+  --button-color: #4a90e2;
+}
+
+html, body {
+  margin: 0;
+  padding: 12px;
+}
+
+body {
+  width: 360px !important;
+  min-width: 360px !important;
+  max-width: 360px !important;
+  font-family: system-ui, sans-serif;
+  padding: 12px;
+  background-color: var(--bg-color, #ffffff);
+  color: var(--text-color, #111111);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+h3,
+h4 {
+  margin: 8px 0;
+}
+
+label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+input[type="color"] {
+  width: 40px;
+  height: 25px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--button-color);
+}
+input[type="range"] {
+    accent-color: var(--button-color);
+    background: #ccc; /* track color stays fixed */
+}
+
+
+
+button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  background-color: var(--button-color);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: color-mix(in srgb, var(--button-color) 85%, black);
+}
+
+#status {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.9em;
+  color: var(--button-color);
+}
+
+/* tab buttons (top bar) */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.tab {
+  flex: 1;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  background: #f2f2f2;
+  border-right: 1px solid #ddd;
+  transition: background 0.2s, font-weight 0.2s;
+}
+
+.tab:last-child {
+  border-right:none;
+}
+
+/* active (selected) tab */
+.tab.active {
+  background: var(--bg-color, #ffffff);
+  font-weight: 600;
+  border-bottom: 2px solid var(--button-color);
+}
+
+/* tab content */
+.tab-content {
+  display: none;        /* hidden by default */
+}
+
+.tab-content.active {
+  display: block;       /* only active tab content is shown */
+}
+
+/* impact card */
+.impact-card {
+  background: linear-gradient(135deg, #34bd66, #16a34a);
+  padding: 16px;
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  margin-top: 12px;
+}
+
+/* Center title + add spacing */
+.impact-title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* metric rows */
+.metric {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.metric-label {
+  font-weight: 500;
+}
+
+.metric-value {
+  font-weight: bold;
+}

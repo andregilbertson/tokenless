@@ -1,4 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener("click", () => {
+      const target = tab.dataset.tab;
+      
+      // remove active from all tabs first
+      document.querySelectorAll(".tab").forEach(t => 
+        t.classList.remove("active")
+      );
+
+      //hide tab contents
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active")
+      );
+
+      //activate clicked tab
+      tab.classList.add("active");
+
+      //show corresponding content block
+      document.getElementById(target).classList.add("active");
+
+    });
+  });
+
+  //get dom elements
   const saveBtn = document.getElementById("saveBtn");
   const status = document.getElementById("status");
 
@@ -24,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const color = data.buttonColor || "#4a90e2";
       const isDark = data.darkMode ?? false;
 
-      // Set input values
+      // Set input values (put values into UI controls)
       colorInput.value = color;
       darkModeToggle.checked = isDark;
       strategyInput.value = data.strategy || "auto";

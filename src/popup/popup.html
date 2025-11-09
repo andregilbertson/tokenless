@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Extension Settings</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+
+    <!-- creates clickable tab buttons -->
+    <div class="tabs">
+      <div class="tab active" data-tab="main">Main</div>
+      <div class="tab" data-tab="settings">Settings</div>
+    </div>
+
+    <!-- main tab content -->
+    <div id="main" class="tab-content active">
+      <div id="dashboard" class="impact-card">
+        <h3 class="impact-title">Your Impact</h3>
+    
+        <div class="metric">
+          <span class="metric-label">Tokens Saved</span>
+          <span id="tokensSavedDisplay" class="metric-value">0</span>
+        </div>
+    
+        <div class="metric">
+          <span class="metric-label">Water Saved</span>
+          <span id="waterSavedDisplay" class="metric-value">0 mL</span>
+        </div>
+      </div>
+    </div> 
+
+    <!-- settings tab content -->
+    <div id="settings" class="tab-content">
+      <h3>Settings</h3>
+
+      <h4>Style</h4>
+
+      <label>
+        Dark Mode
+        <input type="checkbox" id="darkModeToggle" />
+      </label>
+
+      <label>
+        Button color
+        <input type="color" id="color" />
+      </label>
+
+      <h4>Output Optimization</h4>
+
+      <label for="output_optimization_strategy">
+        Strategy
+        <select id="strategy" name="output_strategy">
+          <option value="auto">auto</option>
+          <option value="simple">simple</option>
+          <option value="detailed">detailed</option>
+          <option value="format">format</option>
+          <option value="context">context</option>
+          <option value="token">token</option>
+          <option value="tldr">tldr</option>
+        </select>
+      </label>
+
+      <h4>Replacement</h4>
+
+      <label>
+        Remove Filler
+        <input type="checkbox" id="removeFiller" />
+      </label>
+
+      <label>
+        Simplify Sentences
+        <input type="checkbox" id="simplifySentences" />
+      </label>
+
+      <label>
+        Aggressive Mode
+        <input type="checkbox" id="aggressiveMode" />
+      </label>
+
+      <button id="saveBtn">Save Settings</button>
+      <div id="status"></div>
+    </div>
+
+      <script src="popup.js"></script>
+  </body>
+</html>
+
