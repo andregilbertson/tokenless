@@ -51,11 +51,13 @@
   display: block;
 }
 
-/* On hover, force white fill/stroke regardless of original SVG colors */
-.custom-icon:hover svg,
-.custom-icon:hover svg * {
+/* On hover, make fills transparent and strokes white (lines only) */
+/* Only target paths that have actual strokes (not stroke:none), excluding transparent background paths */
+.custom-icon:hover svg path[style*="stroke-width"],
+.custom-icon:hover svg path[style*="stroke:#"] {
   fill: #ffffff !important;
   stroke: #ffffff !important;
+  stroke-width: 2 !important;
 }
 
 /* Spellcheck UI Styles */
