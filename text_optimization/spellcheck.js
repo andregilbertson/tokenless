@@ -180,7 +180,8 @@ function findBestSuggestion(before, suggestions) {
                 bestSuggestion = {
                     before: before,
                     after: capitalizedSuggestion,
-                    tokensSaved: tokensSaved
+                    tokensSaved: tokensSaved,
+                    type:"spellcheck"
                 };
             }
         });

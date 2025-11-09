@@ -76,27 +76,27 @@ const processPromptText = require("./app.js");
 
             processPromptText(promptText); // <- call your logic
             // Tags you want to extract text from
-            const TAGS = ["div", "p", "strong", "code"];
+            // const TAGS = ["div", "p", "strong", "code"];
 
-            const articles = document.querySelectorAll("article");
+            // const articles = document.querySelectorAll("article");
 
-            const chatText = Array.from(articles)
-                .map((article) => {
-                    const role = article.getAttribute("data-role") || "unknown";
+            // const chatText = Array.from(articles)
+            //     .map((article) => {
+            //         const role = article.getAttribute("data-role") || "unknown";
 
-                    // Collect text from all desired tags inside the article
-                    const text = Array.from(
-                        article.querySelectorAll(TAGS.join(","))
-                    )
-                        .map((el) => el.innerText.trim())
-                        .filter(Boolean) // remove empty strings
-                        .join("\n");
+            //         // Collect text from all desired tags inside the article
+            //         const text = Array.from(
+            //             article.querySelectorAll(TAGS.join(","))
+            //         )
+            //             .map((el) => el.innerText.trim())
+            //             .filter(Boolean) // remove empty strings
+            //             .join("\n");
 
-                    return { role, text };
-                })
-                .filter((chat) => chat.text != "");
+            //         return { role, text };
+            //     })
+            //     .filter((chat) => chat.text != "");
 
-            console.log(chatText);
+            // console.log(chatText);
         });
 
         container.insertBefore(icon, container.firstChild);

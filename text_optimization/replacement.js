@@ -230,7 +230,7 @@ function makeConcise(text, options = {}) {
     const key = `${before}→${after}`;
     if (!seen.has(key) && before !== after) {
       seen.add(key);
-      suggestions.push({ before, after, tokensSaved });
+      suggestions.push({ before, after, tokensSaved, type:"replacement" });
     }
   };
 
