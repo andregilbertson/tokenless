@@ -16,8 +16,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;                 /* adjust size here */
-  height: 40px;                /* adjust size here */
+  width: 35px;                 /* adjust size here */
+  height: 35px;                /* adjust size here */
   border-radius: 50%;
   background: #ffffff;
   color: #111111;
@@ -35,6 +35,7 @@
 }
 
 .custom-icon:hover {
+  /* fill: white; */
   background: #16a34a;         /* sustainability green */
   color: #ffffff;
   border-color: #0f8a3b;
@@ -43,12 +44,18 @@
   transform: rotate(180deg) scale(1.05);
 }
 
-/* Ensure inline SVG scales and inherits color */
+/* Show original SVG colors by default; only size it */
 .custom-icon svg {
   width: 50%;
   height: 50%;
   display: block;
-  fill: currentColor;
+}
+
+/* On hover, force white fill/stroke regardless of original SVG colors */
+.custom-icon:hover svg,
+.custom-icon:hover svg * {
+  fill: #ffffff !important;
+  stroke: #ffffff !important;
 }
 
 /* Spellcheck UI Styles */

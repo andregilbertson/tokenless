@@ -25,7 +25,8 @@ const processPromptText = require("./app.js");
                         : browser?.runtime?.getURL
                         ? browser.runtime.getURL
                         : (p) => p);
-        
+
+                
                 const svgUrl = getURL("../../icons/leaf-logo.svg");
         
                 fetch(svgUrl)
@@ -43,16 +44,6 @@ const processPromptText = require("./app.js");
                             // Make the icon scale inside the circle
                             svg.style.width = "60%";
                             svg.style.height = "60%";
-        
-                            // IMPORTANT: ensure it becomes white on hover
-                            svg.querySelectorAll("*").forEach((n) => {
-                                if (n.getAttribute("fill")) {
-                                    n.setAttribute("fill", "currentColor");
-                                }
-                                if (n.getAttribute("stroke")) {
-                                    n.setAttribute("stroke", "currentColor");
-                                }
-                            });
                         }
                     })
                     .catch(() => {
