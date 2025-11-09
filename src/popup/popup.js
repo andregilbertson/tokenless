@@ -53,7 +53,7 @@ function HangingBulbTimer({ lightbulbTime }) {
 
       {/* Time Display */}
       <div className="bulb-time-simple">
-        <div className="bulb-time-label">Time Saved</div>
+        <div className="bulb-time-label">Light Saved</div>
         <div className="bulb-time-value">{lightbulbTime}</div>
       </div>
     </div>
@@ -72,8 +72,9 @@ function SemiCircleProgress({ progress, label, bottlesSaved }) {
         <svg width="240" height="140" viewBox="0 0 240 140" className="progress-svg">
           <defs>
             <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#34bd66" />
-              <stop offset="100%" stopColor="#16a34a" />
+              <stop offset="0%" stopColor="#0F52BA" />
+              <stop offset="50%" stopColor="#57A0D2" />
+              <stop offset="100%" stopColor="#89CFEF" />
             </linearGradient>
           </defs>
           {/* Background arc */}
@@ -181,7 +182,7 @@ function App() {
     
     // Calculate progress (474 mL = 100%)
     const goalMilliliters = 474;
-    const progressPercent = Math.min(100, Math.round((water / goalMilliliters) * 100));
+    const progressPercent = Math.min(100, Math.round(((water % goalMilliliters)/goalMilliliters) * 100));
     setProgress(progressPercent);
     
     // Calculate lightbulb time (1 token = 12.96 seconds for 5W LED)
