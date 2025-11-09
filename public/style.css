@@ -208,11 +208,14 @@
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 .suggestion-type {
   font-size: 13px;
   color: white;
   font-weight: bold;
+  grid-column: 1;
 }
 .suggestion-buttons {
   display: flex;
@@ -221,8 +224,19 @@
   margin-top: 5px;
 }
 .suggestion-text {
-  color: #4a90e2;
+  color: white;
+  font-size: 13px;
+  display: inline-block;
+  grid-column: 2;
 }
+
+.suggestion-arrow {
+  color: white;
+  font-size: 13px;
+  display: inline-block;
+  grid-column: 2;
+}
+
 .suggestion-savings {
   color: #FF0000;
 }
