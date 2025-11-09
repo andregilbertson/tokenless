@@ -73,8 +73,80 @@ const processPromptText = require("./app.js");
           { type: "Spellcheck", before: "definately", after: "definitely", tokensSaved: 1 },
         ];
 
+        // Store current suggestions array for accept/reject handlers
+        let currentSuggestions = [];
+        // Store current prompt text for applying changes
+        let currentPromptText = "";
+
+        // Function to get current prompt text from textarea
+        function getPromptText() {
+          const ps = document.querySelectorAll("#prompt-textarea p");
+          return Array.from(ps)
+            .map((p) => p.textContent.trim())
+            .join("\n");
+        }
+
+        // Function to update prompt textarea with new text
+        function updatePromptText(newText) {
+          const textarea = document.querySelector("#prompt-textarea");
+          if (!textarea) return;
+
+          // Split text by newlines and create <p> elements
+          const lines = newText.split("\n");
+          textarea.innerHTML = "";
+          lines.forEach((line) => {
+            const p = document.createElement("p");
+            p.textContent = line;
+            textarea.appendChild(p);
+          });
+
+          // Trigger input event to notify any listeners
+          const inputEvent = new Event("input", { bubbles: true });
+          textarea.dispatchEvent(inputEvent);
+        }
+
+        // Function to apply a suggestion change to the prompt
+        function applySuggestion(suggestion) {
+          const currentText = getPromptText();
+          
+          // Escape special regex characters in the before text
+          const escapedBefore = suggestion.before.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          
+          // Create a regex that matches the before text as a whole word/phrase
+          // Use word boundaries for single words, or exact match for phrases
+          let regex;
+          if (/\s/.test(suggestion.before)) {
+            // For phrases (containing spaces), match exactly
+            regex = new RegExp(escapedBefore.replace(/\s+/g, "\\s+"), "gi");
+          } else {
+            // For single words, use word boundaries
+            regex = new RegExp("\\b" + escapedBefore + "\\b", "gi");
+          }
+
+          // Replace the first occurrence
+          const newText = currentText.replace(regex, (match) => {
+            // Preserve the original case pattern if possible
+            if (match === match.toUpperCase()) {
+              return suggestion.after.toUpperCase();
+            } else if (match[0] === match[0].toUpperCase()) {
+              return suggestion.after.charAt(0).toUpperCase() + suggestion.after.slice(1);
+            }
+            return suggestion.after;
+          });
+
+          // Update the textarea
+          updatePromptText(newText);
+          
+          // Update stored prompt text
+          currentPromptText = newText;
+        }
+
         // Populate popup with suggestions
         function populateSuggestions(suggestions) {
+          // Store suggestions for use in accept/reject handlers
+          currentSuggestions = suggestions;
+          // Store current prompt text
+          currentPromptText = getPromptText();
           const list = popup.querySelector("#suggestionsList");
           list.innerHTML = "";
           suggestions.forEach((s, i) => {
@@ -152,13 +224,36 @@ const processPromptText = require("./app.js");
             return;
           }
           else if (target.classList.contains("accept-btn")) {
+
             const idx = target.dataset.i;
-            console.log("Accepted:", sampleSuggestions[idx]);
+            const suggestion = currentSuggestions[idx];
+            console.log("Accepted:", suggestion);
+            
+            // Apply the suggestion to the prompt text
+            applySuggestion(suggestion);
+            
+            // Remove the suggestion from the UI
             target.closest(".suggestion").remove();
+            
+            // Remove from currentSuggestions array
+            currentSuggestions.splice(idx, 1);
+            
+            // Update indices in remaining suggestions
+            const list = popup.querySelector("#suggestionsList");
+            const remainingSuggestions = list.querySelectorAll(".suggestion");
+            remainingSuggestions.forEach((suggestionEl, newIdx) => {
+              const acceptBtn = suggestionEl.querySelector(".accept-btn");
+              const rejectBtn = suggestionEl.querySelector(".reject-btn");
+              if (acceptBtn) acceptBtn.dataset.i = newIdx;
+              if (rejectBtn) rejectBtn.dataset.i = newIdx;
+            });
+
           } else if (target.classList.contains("reject-btn")) {
-            const idx = e.target.dataset.i;
-            console.log("Rejected:", sampleSuggestions[idx]);
+
+            const idx = target.dataset.i;
+            console.log("Rejected:", currentSuggestions[idx]);
             target.closest(".suggestion").remove();
+            
           }
 
           e.stopPropagation();
