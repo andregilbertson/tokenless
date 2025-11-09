@@ -241,9 +241,13 @@ function App() {
     if (isDark) {
       document.documentElement.style.setProperty("--bg-color", "#1e1e1e");
       document.documentElement.style.setProperty("--text-color", "#f1f1f1");
+      document.documentElement.style.setProperty("--tab-bg", "#2d2d2d");
+      document.documentElement.style.setProperty("--tab-shadow", "rgba(255, 255, 255, 0.1)");
     } else {
       document.documentElement.style.setProperty("--bg-color", "#ffffff");
       document.documentElement.style.setProperty("--text-color", "#111111");
+      document.documentElement.style.setProperty("--tab-bg", "#EEE");
+      document.documentElement.style.setProperty("--tab-shadow", "rgba(0, 0, 0, 0.06)");
     }
   };
 
