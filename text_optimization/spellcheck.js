@@ -1,5 +1,6 @@
 var nspell = require("nspell");
 var loadDictionary = require("./dictionary-loader.js");
+var getTokenCount = require("../src/content/token-counter.js");
 
 // function splitIntoWords(text) {
 //     //splits text into words
@@ -101,11 +102,115 @@ function checkWord(word, resolve, reject) {
     }
 }
 
+function analyzeParagraphForCorrections(text) {
+    return new Promise(function(resolve, reject) {
+        // Initialize spellchecker if needed
+        if (!spell) {
+            initSpellChecker().then(function() {
+                processParagraph(text, resolve, reject);
+            }).catch(reject);
+        } else {
+            processParagraph(text, resolve, reject);
+        }
+    });
+}
+
+function processParagraph(text, resolve, reject) {
+    try {
+        // Split text into words (extract words while preserving structure)
+        var words = text.match(/\b[A-Za-z]+\b/g) || [];
+        var corrections = [];
+        
+        // Process each word synchronously
+        words.forEach(function(word) {
+            var wordLower = word.toLowerCase();
+            
+            // Skip very short words
+            if (wordLower.length < 2) {
+                return;
+            }
+            
+            // Check if word is misspelled
+            var isCorrect = spell.correct(wordLower);
+            
+            if (!isCorrect) {
+                var suggestions = spell.suggest(wordLower);
+                
+                if (suggestions && suggestions.length > 0) {
+                    // Find the suggestion that saves the most tokens (synchronous)
+                    var bestSuggestion = findBestSuggestion(word, suggestions);
+                    if (bestSuggestion) {
+                        corrections.push(bestSuggestion);
+                    }
+                }
+            }
+        });
+        
+        resolve(corrections);
+    } catch (error) {
+        console.error('Error analyzing paragraph:', error);
+        reject(error);
+    }
+}
+
+function findBestSuggestion(before, suggestions) {
+    try {
+        // Preserve capitalization of original word
+        var isCapitalized = before[0] === before[0].toUpperCase();
+        
+        // Get token count for the original word (synchronous)
+        var beforeTokens = getTokenCount(before);
+        var bestSuggestion = null;
+        var maxTokensSaved = -Infinity;
+        
+        // Process each suggestion synchronously
+        suggestions.forEach(function(suggestion) {
+            // Capitalize suggestion to match original word's capitalization
+            var capitalizedSuggestion = isCapitalized 
+                ? suggestion.charAt(0).toUpperCase() + suggestion.slice(1)
+                : suggestion;
+            
+            // Get token count for this suggestion (synchronous)
+            var afterTokens = getTokenCount(capitalizedSuggestion);
+            var tokensSaved = beforeTokens - afterTokens;
+            
+            // Find the suggestion that saves the most tokens (or uses the least if all use more)
+            if (tokensSaved > maxTokensSaved) {
+                maxTokensSaved = tokensSaved;
+                bestSuggestion = {
+                    before: before,
+                    after: capitalizedSuggestion,
+                    tokensSaved: tokensSaved
+                };
+            }
+        });
+        
+        // If no suggestion saves tokens, still return the first one
+        if (bestSuggestion === null && suggestions.length > 0) {
+            var capitalizedFirst = isCapitalized 
+                ? suggestions[0].charAt(0).toUpperCase() + suggestions[0].slice(1)
+                : suggestions[0];
+            
+            var firstAfterTokens = getTokenCount(capitalizedFirst);
+            bestSuggestion = {
+                before: before,
+                after: capitalizedFirst,
+                tokensSaved: beforeTokens - firstAfterTokens
+            };
+        }
+        
+        return bestSuggestion;
+    } catch (error) {
+        console.error('Error in findBestSuggestion:', error);
+        return null;
+    }
+}
+
 module.exports = {
     initSpellChecker: initSpellChecker,
-    getSpellingSuggestions: getSpellingSuggestions
+    getSpellingSuggestions: getSpellingSuggestions,
+    analyzeParagraphForCorrections: analyzeParagraphForCorrections
 };
 
-// #2: DELETING UNECESSARY WORDS
 
 

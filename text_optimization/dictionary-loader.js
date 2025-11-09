@@ -1,10 +1,48 @@
 /**
  * Browser-compatible dictionary loader
- * Loads dictionary files using fetch instead of Node.js fs
+ * Loads dictionary files using fetch in browser, fs in Node.js
  */
 
 function loadDictionary() {
     return new Promise(function(resolve, reject) {
+        // Check if we're in Node.js environment
+        if (typeof require !== 'undefined') {
+            try {
+                var fs = require('fs');
+                var path = require('path');
+                
+                // Try to find dictionary files in dist folder (relative to project root)
+                var distPath = path.join(__dirname, '..', 'dist', 'dictionary-en');
+                var affPath = path.join(distPath, 'index.aff');
+                var dicPath = path.join(distPath, 'index.dic');
+                
+                console.log('Loading dictionary from Node.js filesystem:', affPath, dicPath);
+                
+                // Load both dictionary files synchronously (they're small)
+                try {
+                    var affContent = fs.readFileSync(affPath, 'utf8');
+                    var dicContent = fs.readFileSync(dicPath, 'utf8');
+                    
+                    console.log('Dictionary files loaded successfully');
+                    console.log('Aff file size:', affContent.length, 'chars');
+                    console.log('Dic file size:', dicContent.length, 'chars');
+                    
+                    resolve({
+                        aff: affContent,
+                        dic: dicContent
+                    });
+                } catch (fsError) {
+                    console.error('Failed to read dictionary files from filesystem:', fsError);
+                    reject(fsError);
+                }
+                return;
+            } catch (nodeError) {
+                // If require fails, fall through to browser code
+                console.log('Node.js require not available, trying browser method');
+            }
+        }
+        
+        // Browser/Chrome extension code
         // Get the extension's runtime URL helper
         var getURL = null;
         if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
@@ -12,7 +50,7 @@ function loadDictionary() {
         } else if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.getURL) {
             getURL = browser.runtime.getURL;
         } else {
-            reject(new Error('Chrome extension runtime API not available'));
+            reject(new Error('Chrome extension runtime API not available and Node.js filesystem access failed'));
             return;
         }
         
