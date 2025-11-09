@@ -323,3 +323,7 @@
 #acceptAllBtn:hover {
     background-color: var(--main-surface-tertiary);
 }
+
+.strikethrough {
+    text-decoration: line-through;
+}
