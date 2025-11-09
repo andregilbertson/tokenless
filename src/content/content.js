@@ -93,14 +93,8 @@ const processPromptText = require("./app.js");
             list.appendChild(div);
           });
         }
-
-        
-        // Click event (currently blank)
-        icon.addEventListener("click", (e) => {
-          e.stopPropagation();
-            // TODO: fill in functionality
-            console.log("Icon clicked!");
-            const ps = document.querySelectorAll("#prompt-textarea p");
+        const initSuggestionList = () => {
+          const ps = document.querySelectorAll("#prompt-textarea p");
             const promptText = Array.from(ps)
                 .map((p) => p.textContent.trim())
                 .join("\n");
@@ -111,6 +105,16 @@ const processPromptText = require("./app.js");
             populateSuggestions(suggs);
             popup.classList.remove("hidden");
            });
+        };
+
+        
+        // Click event (currently blank)
+        icon.addEventListener("click", (e) => {
+          e.stopPropagation();
+            // TODO: fill in functionality
+            console.log("Icon clicked!");
+            initSuggestionList();
+            
             // <- call your logic
             // Tags you want to extract text from
             // const TAGS = ["div", "p", "strong", "code"];
