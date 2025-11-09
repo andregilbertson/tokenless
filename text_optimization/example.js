@@ -1,3 +1,7 @@
+const { 
+  makeConcise,
+  getReductionStats
+} = require('./replacement.js');
 /**
  * Example usage of the text replacement function
  */
@@ -18,7 +22,7 @@ console.log('Example 1 - Original:');
 console.log(example1);
 console.log('\nExample 1 - Concise:');
 console.log(concise1);
-console.log('\nStats:', getReductionStats(example1, concise1));
+//console.log('\nStats:', getReductionStats(example1, concise1));
 
 // Example 2: With options
 const example2 = `
@@ -38,7 +42,7 @@ console.log('\n\nExample 2 - Original:');
 console.log(example2);
 console.log('\nExample 2 - Concise:');
 console.log(concise2);
-console.log('\nStats:', getReductionStats(example2, concise2));
+//console.log('\nStats:', getReductionStats(example2, concise2));
 
 // Example 3: Aggressive mode
 const example3 = `
@@ -55,7 +59,7 @@ console.log('\n\nExample 3 - Original:');
 console.log(example3);
 console.log('\nExample 3 - Concise (Aggressive):');
 console.log(concise3);
-console.log('\nStats:', getReductionStats(example3, concise3));
+//console.log('\nStats:', getReductionStats(example3, concise3));
 
 // Example 4: Real-world example
 const example4 = `
@@ -72,5 +76,5 @@ console.log('\n\nExample 4 - Original:');
 console.log(example4);
 console.log('\nExample 4 - Concise:');
 console.log(concise4);
-console.log('\nStats:', getReductionStats(example4, concise4));
+//console.log('\nStats:', getReductionStats(example4, concise4));
 
