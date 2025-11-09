@@ -61,7 +61,10 @@ const processPromptText = require("./app.js");
         popup.innerHTML = `
           <div class="popup-header">
             <h2>Suggestions</h2>
-            <button id="closePopup">✖</button>
+            <div class="header-buttons">
+              <button id="acceptAllBtn" class="accept-all-btn">Accept All</button>
+              <button id="closePopup">✖</button>
+            </div>
           </div>
           <div id="suggestionsList" class="suggestions-list"></div>
         `;
@@ -135,8 +138,43 @@ const processPromptText = require("./app.js");
           textarea.dispatchEvent(inputEvent);
         }
 
+        // Function to accept all suggestions at once
+        function acceptAllSuggestions() {
+          if (currentSuggestions.length === 0) {
+            console.log("No suggestions to accept");
+            return;
+          }
+
+          // Create a copy of suggestions to apply (since currentSuggestions gets regenerated)
+          const suggestionsToApply = [...currentSuggestions];
+          let totalTokensSaved = 0;
+          
+          // Apply all suggestions in order without refreshing between each
+          suggestionsToApply.forEach((suggestion) => {
+            // Apply the suggestion without refreshing (pass false)
+            applySuggestion(suggestion, false);
+            
+            // Accumulate tokens saved
+            if (suggestion.tokensSaved && suggestion.tokensSaved > 0) {
+              totalTokensSaved += suggestion.tokensSaved;
+            }
+          });
+
+          // Add all tokens saved to Chrome extension storage at once
+          if (totalTokensSaved > 0) {
+            addTokensSaved(totalTokensSaved);
+          }
+
+          // Clear the suggestions list UI
+          const list = popup.querySelector("#suggestionsList");
+          list.innerHTML = "";
+
+          // Refresh suggestions list once at the end with all changes applied
+          initSuggestionList();
+        }
+
         // Function to apply a suggestion change to the prompt
-        function applySuggestion(suggestion) {
+        function applySuggestion(suggestion, shouldRefresh = true) {
           const currentText = getPromptText();
           
           // Escape special regex characters in the before text
@@ -171,8 +209,10 @@ const processPromptText = require("./app.js");
           // Update stored prompt text
           currentPromptText = newText;
 
-          //refresh suggestions list
-          initSuggestionList();
+          // Refresh suggestions list only if requested (skip when accepting all)
+          if (shouldRefresh) {
+            initSuggestionList();
+          }
         }
 
         // Populate popup with suggestions
@@ -186,6 +226,12 @@ const processPromptText = require("./app.js");
               ignored.before == s.before && ignored.after == s.after
             );
           });
+
+          // Show/hide Accept All button based on suggestions
+          const acceptAllBtn = popup.querySelector("#acceptAllBtn");
+          if (acceptAllBtn) {
+            acceptAllBtn.style.display = currentSuggestions.length > 0 ? "block" : "none";
+          }
 
           if (currentSuggestions.length == 0) {
             const list = popup.querySelector("#suggestionsList");
@@ -278,6 +324,11 @@ const processPromptText = require("./app.js");
             while (list.firstChild) {
               list.removeChild(list.firstChild);
             }
+            return;
+          }
+          else if (target.matches("#acceptAllBtn")) {
+            console.log("Accept All clicked");
+            acceptAllSuggestions();
             return;
           }
           else if (target.classList.contains("accept-btn")) {
